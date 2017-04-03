@@ -3,7 +3,8 @@ var oC = new cones(200,300);
 var gB = new gearBox(1250,575);
 //var angle = 0.0;
 var speed = 0;
-var friction = 0.1;
+var velocity = 0.1;
+var friction = 9.5;
 var wallx = 400;
 var wally = 500;
 var wallw = 50;
@@ -14,6 +15,7 @@ var rain = false;
 var rains = [];
 rains.length = 600;
 var rain_s;
+
 
 var breaking, reversing, driving, firstGear, secondGear,thirdGear,
 forthGear, flash, leftFlash, fifthGear = false;
@@ -57,30 +59,31 @@ function draw() {
   }
   // text(c.angle.toFixed(5),mouseX,mouseY);
   c.create(25);
-  c.btn(speed)
+  c.btn(speed);
+  c.edges();
   //c.attractionPoint(speed, mouseX, mouseY);
   gB.create()
   if (keyIsDown(UP_ARROW)) {
     driving = true;
-    speed += friction;
+    speed += velocity;
     if(firstGear){
-      if(speed > friction*10){
-        speed = friction*10;
+      if(speed > velocity*10){
+        speed = velocity*10;
       }
     }
     else if(secondGear){
-      if(speed > friction*20){
-        speed = friction*20;
+      if(speed > velocity*20){
+        speed = velocity*20;
       }
     }
     else if(thirdGear){
-      if(speed > friction*30){
-        speed = friction*30;
+      if(speed > velocity*30){
+        speed = velocity*30;
       }
     }
     else if(forthGear){
-      if(speed > friction*40){
-        speed = friction*40;
+      if(speed > velocity*40){
+        speed = velocity*40;
       }
     }
 }
@@ -89,23 +92,23 @@ function draw() {
   }
   if(!keyIsDown(UP_ARROW)){
     driving = false;
-    speed *= friction*9.9;
+    speed *= velocity*friction;
   }
   if(d<=50){
-    speed *= friction;//*speed
+    speed *= velocity;//*speed
   }
-  if(keyIsDown(SHIFT)){
+  if(keyIsDown(DOWN_ARROW)){
     breaking = true;
-    speed *= friction*9;
+    speed *= velocity*friction-0.05;
     //skr.play()
   }else{
     breaking = false;
   }
-  if(keyIsDown(CONTROL)){
+  if(keyIsDown(SHIFT)){
     reversing = true;
     gearX = 1320;
     gearY = 645;
-    speed -= friction;
+    speed -= velocity;
   }else{
     reversing = false;
   }
@@ -130,7 +133,7 @@ function draw() {
   text("[F] Headlights", 10, 630)
   pop();
   if(rain){
-      friction = 0.1;
+      friction = 9.9;
       fill('rgba(0%,0%,0%,0.3)')
       rect(width/2,height/2,width,height)
       rain_s = 20;
@@ -140,7 +143,7 @@ function draw() {
         rains[i].show();
       }
   }else{
-      friction = 0.1
+      velocity = 0.1
   }
 }
 function keyPressed(){

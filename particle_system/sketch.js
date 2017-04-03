@@ -1,11 +1,14 @@
 var system;
-
+var posx;
+var posy;
 function setup() {
   createCanvas(720, 400);
-  system = new ParticleSystem(createVector(width/2, 50));
+  system = new ParticleSystem(createVector(posx,posy));
 }
 
 function draw() {
+  posx = mouseX
+  posy = mouseY
   background(51);
   system.addParticle();
   system.run();
@@ -38,7 +41,7 @@ Particle.prototype.display = function() {
   u = random(255,150);
   fill(u, 0, 165, this.lifespan);
   v = random(50,0)
-  ellipse(mouseX, mouseY, v, v);
+  ellipse(this.position.x, this.position.y, v, v);
 };
 
 // Is the particle still useful?
