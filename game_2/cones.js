@@ -7,15 +7,15 @@ function cones(_x,_y){
     noStroke();
     rectMode(CENTER)
     fill(255,150,0)
-    append(coneArr,rect(_x+200*i,_y,size,size,3));
+    append(coneArr,rect(_x+200*o,_y,size,size,3));
     fill(255,153,0)
     stroke(51,51,51,150)
-    append(coneArr,ellipse(_x+200*i,_y,size*3/4,size*3/4));
+    append(coneArr,ellipse(_x+200*o,_y,size*3/4,size*3/4));
     fill(255)
-    append(coneArr,ellipse(_x+200*i,_y,size*3/4/2,size*3/4/2));   
+    append(coneArr,ellipse(_x+200*o,_y,size*3/4/2,size*3/4/2));
     fill(255,153,0)
-    append(coneArr,ellipse(_x+200*i,_y,size*3/4/2/2,size*3/4/2/2));
-    if(c.collision(_x+200*i,_y,22)){
+    append(coneArr,ellipse(_x+200*o,_y,size*3/4/2/2,size*3/4/2/2));
+    if(c.collision(_x+200*o,_y,22)){
     }
   }
   this.attractionPoint = function(magnitude, pointX, pointY) {
@@ -25,7 +25,7 @@ function cones(_x,_y){
     d = dist(this.x,this.y,mouseX,mouseY)
   }
   this.collision = function(){
-    if(c.collision(_x+200*i,_y,22)){
+    if(c.collision(_x+200*o,_y,22)){
       this.x += 100
       return true
     }

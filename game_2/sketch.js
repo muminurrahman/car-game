@@ -9,9 +9,14 @@ var wally = 500;
 var wallw = 50;
 var wallh = 50;
 var col = 0;
+var counter = 0;
+var rain = false;
+var rains = [];
+rains.length = 600;
+var rain_s;
 
-var breaking, reversing, driving, firstGear, secondGear,thirdGear, 
-forthGear, fifthGear = false;
+var breaking, reversing, driving, firstGear, secondGear,thirdGear,
+forthGear, flash, leftFlash, fifthGear = false;
 // var rain = true
 var coneArr = [];
 var d;
@@ -25,10 +30,13 @@ function setup() {
   createCanvas(1400,700);
   //skr.setVolume(1);
   rectMode(CENTER);
+  for (var k = 0;k < rains.length; k++) {
+      rains[k] = new Star();
+  }
 }
 
 function draw() {
-  //console.log(speed)
+  //console.log(rains.length)
   background(46,150,46);
   fill(255);
   road();
@@ -38,7 +46,7 @@ function draw() {
   if(speed < -10){
     speed = -10;
   }
-  for(i = 0;i<5;i++){
+  for(o = 0;o<5;o++){
     noStroke();
     oC.create(200,300);
     oC.create(300,200);
@@ -47,11 +55,12 @@ function draw() {
       oC.attractionPoint(speed,mouseX,mouseY);
     }
   }
-  text(c.angle.toFixed(5),mouseX,mouseY);
+  // text(c.angle.toFixed(5),mouseX,mouseY);
   c.create(25);
-  c.attractionPoint(speed, mouseX, mouseY);
+  c.btn(speed)
+  //c.attractionPoint(speed, mouseX, mouseY);
   gB.create()
-  if (mouseIsPressed && d > 20) {
+  if (keyIsDown(UP_ARROW)) {
     driving = true;
     speed += friction;
     if(firstGear){
@@ -74,11 +83,11 @@ function draw() {
         speed = friction*40;
       }
     }
-  }
+}
   if(driving = false){
     speed = 0;
   }
-  if(!mouseIsPressed){
+  if(!keyIsDown(UP_ARROW)){
     driving = false;
     speed *= friction*9.9;
   }
@@ -103,7 +112,6 @@ function draw() {
   if(keyCode == 67){
     speed = 3;
   }
-  
   //crash detector test
   push();
   rectMode(CENTER);
@@ -118,8 +126,22 @@ function draw() {
   //
   push();
   textSize(25);
-  text("[Click to drive], [C] for cruise control, Press 1-5 for gears. [CTRL] to reverse, [SHIFT] for break",10,600)
+  text("[ARROW KEYS], [C] for cruise control, Press 1-5 for gears. [CTRL] to reverse, [SHIFT] for break",10,600)
+  text("[F] Headlights", 10, 630)
   pop();
+  if(rain){
+      friction = 0.1;
+      fill('rgba(0%,0%,0%,0.3)')
+      rect(width/2,height/2,width,height)
+      rain_s = 20;
+      translate(width / 2, height / 2);
+      for (var i = 0; i < rains.length; i++) {
+        rains[i].update();
+        rains[i].show();
+      }
+  }else{
+      friction = 0.1
+  }
 }
 function keyPressed(){
   if(keyCode === 49){//1
@@ -128,7 +150,7 @@ function keyPressed(){
     gearX = 1180;
     gearY = 505;
   }
-  
+
   else if(keyCode === 50 && !reversing){//2
     driving = true;
     firstGear = false;
@@ -136,15 +158,15 @@ function keyPressed(){
     gearX = 1180;
     gearY = 645;
   }
-  
+
   else if(keyCode === 51 && !reversing){//3
     driving = true;
     secondGear = false;
      thirdGear = true;
      gearX = 1250;
-     gearY = 505; 
+     gearY = 505;
   }
-    
+
   else if(keyCode === 52 && !reversing){//4
      driving = true;
      thirdGear = false;
@@ -157,7 +179,12 @@ function keyPressed(){
     forthGear = false;
     fifthGear = true
     gearX = 1320;
-    gearY = 505  
+    gearY = 505
+  }
+  else if (keyCode === 82){
+      rain = !rain;
+  }
+  else if (keyCode === 70){
+      flash = !flash
   }
 }
-

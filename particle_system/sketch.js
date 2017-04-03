@@ -38,7 +38,7 @@ Particle.prototype.display = function() {
   u = random(255,150);
   fill(u, 0, 165, this.lifespan);
   v = random(50,0)
-  ellipse(this.position.x, this.position.y, v, v);
+  ellipse(mouseX, mouseY, v, v);
 };
 
 // Is the particle still useful?

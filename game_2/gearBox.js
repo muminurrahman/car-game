@@ -11,6 +11,7 @@ function gearBox(x,y){
   this.create = function(){
     rectMode(CENTER)
     ellipseMode(CENTER)
+    noStroke()
     // text(this.x-)
     fill(150)
     rect(this.x,this.y,200,200,10)
