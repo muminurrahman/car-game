@@ -1,24 +1,22 @@
 var c = new car(700,350);
+//var aiC = new ai_cars(200,530)
 var oC = new cones(200,300);
 var gB = new gearBox(1250,575);
 //var angle = 0.0;
 var speed = 0;
 var velocity = 0.1;
 var friction = 9.5;
-var wallx = 400;
-var wally = 500;
-var wallw = 50;
-var wallh = 50;
 var col = 0;
 var counter = 0;
 var rain = false;
 var rains = [];
+var aiC = [];
 rains.length = 600;
 var rain_s;
 
 
 var breaking, reversing, driving, firstGear, secondGear,thirdGear,
-forthGear, flash, leftFlash, fifthGear = false;
+forthGear, flash, leftFlash, fifthGear, grass = false;
 // var rain = true
 var coneArr = [];
 var d;
@@ -38,7 +36,8 @@ function setup() {
 }
 
 function draw() {
-  //console.log(rains.length)
+  // console.log(c.x)
+  // console.log(c.y)
   background(46,150,46);
   fill(255);
   road();
@@ -51,16 +50,22 @@ function draw() {
   for(o = 0;o<5;o++){
     noStroke();
     oC.create(200,300);
-    oC.create(300,200);
     if(oC.collision()){
       console.log("cones");
-      oC.attractionPoint(speed,mouseX,mouseY);
     }
   }
   // text(c.angle.toFixed(5),mouseX,mouseY);
   c.create(25);
   c.btn(speed);
   c.edges();
+  for(var ai = 0; ai < 5; ai++){
+      aiC[ai] = new ai_cars(200+150*ai,530)
+      aiC[ai].create(25)
+      if(aiC[ai].collision(c.x,c.y,50)){
+          console.log("BUHUUHUHUHUH")
+          speed = 0;
+      }
+  }
   //c.attractionPoint(speed, mouseX, mouseY);
   gB.create()
   if (keyIsDown(UP_ARROW)) {
@@ -115,18 +120,6 @@ function draw() {
   if(keyCode == 67){
     speed = 3;
   }
-  //crash detector test
-  push();
-  rectMode(CENTER);
-  fill(150);
-  rect(wallx,wally,wallw,wallh);
-  if(c.collision(wallx,wally,wallw)){
-    col = 255;
-  }else{
-    col = 0;
-  }
-  pop();
-  //
   push();
   textSize(25);
   text("[ARROW KEYS], [C] for cruise control, Press 1-5 for gears. [CTRL] to reverse, [SHIFT] for break",10,600)
