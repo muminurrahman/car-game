@@ -40,6 +40,7 @@ function draw() {
   // console.log(c.y)
   background(46,150,46);
   fill(255);
+  text("TRAINING STAGE", 200,20)
   road();
   if(speed>10){
     speed = 10;
@@ -61,10 +62,11 @@ function draw() {
   for(var ai = 0; ai < 5; ai++){
       aiC[ai] = new ai_cars(200+150*ai,530)
       aiC[ai].create(25)
-      if(aiC[ai].collision(c.x,c.y,50)){
-          console.log("BUHUUHUHUHUH")
-          speed = 0;
-      }
+      aiC.forEach(function(){
+          if(aiC[ai].collision(c.x,c.y,25)){
+              speed = 0;
+          }
+      })
   }
   //c.attractionPoint(speed, mouseX, mouseY);
   gB.create()
@@ -122,8 +124,8 @@ function draw() {
   }
   push();
   textSize(25);
-  text("[ARROW KEYS], [C] for cruise control, Press 1-5 for gears. [CTRL] to reverse, [SHIFT] for break",10,600)
-  text("[F] Headlights", 10, 630)
+  text("[ARROW KEYS], [C] for cruise control, Press 1-5 for gears. [CTRL] to reverse, [DOWN] for break",10,600)
+  text("[F] Headlights,  [R] Rain", 10, 630)
   pop();
   if(rain){
       friction = 9.9;
