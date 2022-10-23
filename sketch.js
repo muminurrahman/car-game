@@ -8,15 +8,15 @@ var counter = 0;
 var raining = false;
 var rain_s;
 var droplets = new Array(600);
-var cones = new Array(4);
+var cones = new Array(10);
 var aiC = new Array(4);
 var d;
 var accelerating, headlights, leftFlash, grass = false;
 var colours = ['red', 'orange', 'yellow', 'green', 'blue', 'violet', 'indigo',
-  'pink', 'purple', 'brown', 'navy', 'black', 'grey', 'white', 'gold', 'silver', 'bronze', 
+  'pink', 'purple', 'brown', 'navy', 'black', 'grey', 'white', 'gold', 'silver', 'bronze',
   'cyan', 'teal', 'magenta', 'fuchsia', 'turquoise', 'khaki', 'tan', 'crimson', 'maroon'];
 var state = playScreen;
-
+var tempRainCondition = 0;
 //function preload(){
 //  skr = loadSound("Skrr.m4a")
 // }
@@ -47,8 +47,7 @@ function draw() {
 }
 
 function keyPressed() {
-  if (keyCode === 82) raining = !raining;
-  else if (keyCode === 69) gB.shiftGearUp();
+  if (keyCode === 69) gB.shiftGearUp();
   else if (keyCode === 81) gB.shiftGearDown();
 
   if (keyCode === 17 && state !== controlScreen)
@@ -64,15 +63,23 @@ function playScreen() {
 
   // render row of cones
   for (var cone = 0; cone < cones.length; cone++) {
-    cones[cone].render(100 + (cone * 250), 300);
+    cones[cone].render(100 + (cone * 250), 200);
+    cones[cone].render(-25 + (cone * 250), 300);
   }
 
   // render cars
   for (var ai = 0; ai < aiC.length; ai++) {
     aiC[ai].render(25);
-    aiC[ai].x++;
+    aiC[ai].x = aiC[ai].x + 2;
 
-    if (aiC[ai].x > width) aiC[ai].x = 0;
+    if (aiC[ai].x > width) {
+      aiC[ai].x = 0;
+      
+      tempRainCondition++;
+      if(tempRainCondition % 10 === 0) {
+        raining = !raining;
+      }
+    }
   }
 
   player.render(25);
@@ -84,8 +91,6 @@ function playScreen() {
     if (ai.collision(player.x, player.y, 25)) {
       speed = 0;
     }
-
-
   })
 
   gB.render()
@@ -169,10 +174,8 @@ function controlScreen() {
   text("[DOWN ARROW]\t\t\t\tBreak", 50, 200);
   text("[LEFT ARROW]\t\t\t\t\tSteer left", 50, 250);
   text("[RIGHT ARROW]\t\t\t\t\Steer right", 50, 300);
-  text("[SHIFT]\t\t\t\t\t\t\t\t\t\t\t\tReverse", 50, 350);
-  text("[Q]\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tShift down gear", 50, 400);
-  text("[E]\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tShift up gear", 50, 450);
-  text("[C]\t\t\t\t\t\t\tToggle cruise control", 550, 150);
-  text("[R]\t\t\t\t\t\t\tToggle rain", 550, 250);
-  text("[CTRL]\t\t\t Toggle control screen", 550, 300);
+  text("[Q]\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tShift down gear", 50, 350);
+  text("[E]\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tShift up gear", 50, 400);
+  text("[C]\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tToggle cruise control", 50, 450);
+  text("[CTRL]\t\t\t\t\t\t\t\t\t\t\t\t Toggle control screen", 50, 500);
 }
