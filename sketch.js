@@ -1,4 +1,4 @@
-var player = new Car(100, 200);
+var player = new Car(100, 200, "silver");
 var gB = new GearBox();
 var speed = 0;
 var velocity = 0.1;
@@ -9,13 +9,12 @@ var raining = false;
 var rain_s;
 var droplets = new Array(600);
 var cones = new Array(4);
-var aiC = new Array(6);
+var aiC = new Array(4);
 var d;
-var accelerating, braking, headlights, leftFlash, grass = false;
+var accelerating, headlights, leftFlash, grass = false;
 var colours = ['red', 'orange', 'yellow', 'green', 'blue', 'violet', 'indigo',
-  'pink', 'purple', 'brown', 'lilac', 'navy', 'cream', 'black', 'grey', 'white',
-  'gold', 'silver', 'bronze', 'cyan', 'teal', 'magenta', 'fuchsia', 'turquoise',
-  'lilac', 'khaki', 'tan', 'crimson', 'amber', 'burgandy', 'maroon']
+  'pink', 'purple', 'brown', 'navy', 'black', 'grey', 'white', 'gold', 'silver', 'bronze', 
+  'cyan', 'teal', 'magenta', 'fuchsia', 'turquoise', 'khaki', 'tan', 'crimson', 'maroon'];
 var state = playScreen;
 
 //function preload(){
@@ -28,7 +27,9 @@ function setup() {
   //skr.setVolume(1);
 
   for (var ai = 0; ai < aiC.length; ai++) {
-    aiC[ai] = new ai_cars(200 + 150 * ai, 530, colours[Math.floor(Math.random() * colours.length)]);
+    var random1 = Math.floor(Math.random() * colours.length);
+    var random2 = Math.random() > .5 ? 400 : 500;
+    aiC[ai] = new Car(100 + 300 * ai, random2, colours[random1]);
   }
 
   for (var cone = 0; cone < cones.length; cone++) {
@@ -46,8 +47,7 @@ function draw() {
 }
 
 function keyPressed() {
-  if (keyCode === 70) headlights = !headlights
-  else if (keyCode === 82) raining = !raining;
+  if (keyCode === 82) raining = !raining;
   else if (keyCode === 69) gB.shiftGearUp();
   else if (keyCode === 81) gB.shiftGearDown();
 
@@ -60,19 +60,22 @@ function keyPressed() {
 function playScreen() {
   background(46, 150, 46);
 
-  road();
+  new Road().render();
 
   // render row of cones
   for (var cone = 0; cone < cones.length; cone++) {
     cones[cone].render(100 + (cone * 250), 300);
   }
 
-  // render parked cars
+  // render cars
   for (var ai = 0; ai < aiC.length; ai++) {
-    aiC[ai].create(25);
+    aiC[ai].render(25);
+    aiC[ai].x++;
+
+    if (aiC[ai].x > width) aiC[ai].x = 0;
   }
 
-  player.create(25);
+  player.render(25);
   player.btn(speed);
   player.edges();
 
@@ -81,6 +84,8 @@ function playScreen() {
     if (ai.collision(player.x, player.y, 25)) {
       speed = 0;
     }
+
+
   })
 
   gB.render()
@@ -116,8 +121,8 @@ function playScreen() {
         speed = velocity * 40;
       }
     } else if (gB.getGear() == 5) {
-      if (speed > velocity * 220) {
-        speed = velocity * 220;
+      if (speed > velocity * 180) {
+        speed = velocity * 180;
       }
     }
   } else if (!keyIsDown(UP_ARROW)) {
@@ -129,10 +134,10 @@ function playScreen() {
   if (keyCode == 67) speed = 3; // cruise control
 
   if (keyIsDown(DOWN_ARROW)) {
-    braking = true;
+    player.braking = true;
     speed *= velocity * friction - 0.05;
     //skr.play()
-  } else braking = false;
+  } else player.braking = false;
 
   push();
   textSize(20);
@@ -140,6 +145,7 @@ function playScreen() {
   pop();
 
   if (raining) {
+    headlights = true;
     friction = 9.9;
     fill(0, 0, 0, 33);
     rect(width / 2, height / 2, width, height);
@@ -149,6 +155,8 @@ function playScreen() {
       droplets[raindrop].update();
       droplets[raindrop].render();
     }
+  } else {
+    headlights = false;
   }
 }
 
@@ -165,7 +173,6 @@ function controlScreen() {
   text("[Q]\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tShift down gear", 50, 400);
   text("[E]\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tShift up gear", 50, 450);
   text("[C]\t\t\t\t\t\t\tToggle cruise control", 550, 150);
-  text("[F]\t\t\t\t\t\t\tToggle headlights", 550, 200);
   text("[R]\t\t\t\t\t\t\tToggle rain", 550, 250);
   text("[CTRL]\t\t\t Toggle control screen", 550, 300);
 }

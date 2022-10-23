@@ -1,5 +1,5 @@
 
-function Car(x, y) {
+function Car(x, y, colour) {
     this.x = x;
     this.y = y;
     this.angle = 0;
@@ -7,8 +7,9 @@ function Car(x, y) {
     this.historyL = [];
     this.brakehis = [];
     this.brakehisL = [];
+    var braking = true;
 
-    this.create = function (d) {
+    this.render = function (d) {
         grass = (this.y < 150 || this.y > height - 150);
 
         if (grass) {
@@ -27,11 +28,11 @@ function Car(x, y) {
             var pos = this.history[i];
             var pos_left = this.historyL[i];
             noStroke();
-            fill(139, 69, 19);
+            fill(92, 64, 51);
             rect(pos.x, pos.y, 5, 5);
             rect(pos_left.x, pos_left.y, 5, 5);
         }
-        if (keyIsDown(DOWN_ARROW)) {
+        if (keyIsDown(DOWN_ARROW) && this.braking) {
             var b_right = createVector(this.x - d / 2, this.y + d / 2);
             var b_left = createVector(this.x - d / 2, this.y - d / 2);
             this.brakehis.push(b_right);
@@ -73,7 +74,7 @@ function Car(x, y) {
         rect(0 + d / 2, 0 - d / 2 - 1, d / 5, d / 10); //front left
 
         noStroke();
-        fill("silver");
+        fill(colour);
         rect(0, 0, d * 1.6, d);
         ellipse(-d / 2 - 7, 0, 10, d);
         triangle(d / 2 + 7, 0, 25, 8, d / 2 + 7, 12.5);
@@ -113,7 +114,7 @@ function Car(x, y) {
             triangle(20, -10, 80, 10, 80, -30);
         }
 
-        if (speed < 0 || braking) {
+        if (speed < 0 || this.braking) {
             fill(255, 0, 0);
             ellipse(-20, 10, 3, 3);
             ellipse(-20, -10, 3, 3);
