@@ -11,7 +11,7 @@ var droplets = new Array(600);
 var cones = new Array(10);
 var aiC = new Array(4);
 var d;
-var accelerating, headlights, leftFlash, grass = false;
+var accelerating, leftFlash, grass = false;
 var colours = ['red', 'orange', 'yellow', 'green', 'blue', 'violet', 'indigo',
   'pink', 'purple', 'brown', 'navy', 'black', 'grey', 'white', 'gold', 'silver', 'bronze',
   'cyan', 'teal', 'magenta', 'fuchsia', 'turquoise', 'khaki', 'tan', 'crimson', 'maroon'];
@@ -49,6 +49,7 @@ function draw() {
 function keyPressed() {
   if (keyCode === 69) gB.shiftGearUp();
   else if (keyCode === 81) gB.shiftGearDown();
+  else if (keyCode === 70) player.headlights = !player.headlights;
 
   if (keyCode === 17 && state !== controlScreen)
     state = controlScreen;
@@ -71,6 +72,7 @@ function playScreen() {
   for (var ai = 0; ai < aiC.length; ai++) {
     aiC[ai].render(25);
     aiC[ai].x = aiC[ai].x + 2;
+    aiC[ai].headlights = raining;
 
     if (aiC[ai].x > width) {
       aiC[ai].x = 0;
@@ -150,7 +152,6 @@ function playScreen() {
   pop();
 
   if (raining) {
-    headlights = true;
     friction = 9.9;
     fill(0, 0, 0, 33);
     rect(width / 2, height / 2, width, height);
@@ -160,8 +161,6 @@ function playScreen() {
       droplets[raindrop].update();
       droplets[raindrop].render();
     }
-  } else {
-    headlights = false;
   }
 }
 
@@ -176,6 +175,7 @@ function controlScreen() {
   text("[RIGHT ARROW]\t\t\t\t\Steer right", 50, 300);
   text("[Q]\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tShift down gear", 50, 350);
   text("[E]\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tShift up gear", 50, 400);
-  text("[C]\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tToggle cruise control", 50, 450);
-  text("[CTRL]\t\t\t\t\t\t\t\t\t\t\t\t Toggle control screen", 50, 500);
+  text("[F]\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tToggle headlights", 50, 450);
+  text("[C]\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tToggle cruise control", 50, 500);
+  text("[CTRL]\t\t\t\t\t\t\t\t\t\t\t\t Toggle control screen", 50, 550);
 }
