@@ -7,7 +7,8 @@ function Car(x, y, colour) {
     this.historyL = [];
     this.brakehis = [];
     this.brakehisL = [];
-    var braking = true;
+    var braking = false;
+    var headlights = false;
 
     this.render = function (d) {
         grass = (this.y < 150 || this.y > height - 150);
@@ -104,7 +105,7 @@ function Car(x, y, colour) {
         ellipse(-20, 10, 3, 3);
         ellipse(-20, -10, 3, 3);
 
-        if (headlights) {
+        if (this.headlights) {
             noStroke();
             fill(255, 255, 0);
             ellipse(20, 10, 3, 3);

@@ -14,7 +14,5 @@ var i = 0;
       rect(i, height / 2 - paint, 25, 6);
       rect(i, height / 2 + paint, 25, 6);
     }
-
-    i--;
   }
 }
