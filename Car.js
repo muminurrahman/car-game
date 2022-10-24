@@ -14,16 +14,14 @@ function Car(x, y, colour) {
         grass = (this.y < 150 || this.y > height - 150);
 
         if (grass) {
-            var v_right = createVector(this.x - d / 2, this.y + d / 2)
-            var v_left = createVector(this.x - d / 2, this.y - d / 2)
-            this.history.push(v_right)
-            this.historyL.push(v_left)
-            if (this.history.length > 50) {
-                this.history.splice(0, 1)
-            }
-            if (this.historyL.length > 50) {
-                this.historyL.splice(0, 1)
-            }
+            var v_right = createVector(this.x - d / 2, this.y + d / 2);
+            var v_left = createVector(this.x - d / 2, this.y - d / 2);
+            this.history.push(v_right);
+            this.historyL.push(v_left);
+        }
+        if (!raining) {
+            this.history.splice(0, 1);
+            this.historyL.splice(0, 1);
         }
         for (var i = 0; i < this.history.length; i++) {
             var pos = this.history[i];
@@ -33,17 +31,15 @@ function Car(x, y, colour) {
             rect(pos.x, pos.y, 5, 5);
             rect(pos_left.x, pos_left.y, 5, 5);
         }
-        if (keyIsDown(DOWN_ARROW) && this.braking) {
+        if (keyIsDown(DOWN_ARROW) && this.braking && !raining) {
             var b_right = createVector(this.x - d / 2, this.y + d / 2);
             var b_left = createVector(this.x - d / 2, this.y - d / 2);
             this.brakehis.push(b_right);
             this.brakehisL.push(b_left);
-            if (this.brakehis.length > 50) {
-                this.brakehis.splice(0, 1);
-            }
-            if (this.brakehisL.length > 50) {
-                this.brakehisL.splice(0, 1);
-            }
+        }
+        if (raining) {
+            this.brakehis.splice(0, 1);
+            this.brakehisL.splice(0, 1);
         }
         for (var i = 0; i < this.brakehis.length; i++) {
             var bpos = this.brakehis[i];
