@@ -1,22 +1,11 @@
-var player = new Car(100, 200, "silver");
-var gB = new GearBox();
-var speed = 0;
-var velocity = 0.1;
-var friction = 9.5;
-var col = 0;
-var counter = 0;
-var raining = false;
-var rain_s;
-var droplets = new Array(600);
-var cones = new Array(10);
-var aiC = new Array(4);
-var d;
-var accelerating, leftFlash, grass = false;
-var colours = ['red', 'orange', 'yellow', 'green', 'blue', 'violet', 'indigo',
-  'pink', 'purple', 'brown', 'navy', 'black', 'grey', 'white', 'gold', 'silver', 'bronze',
-  'cyan', 'teal', 'magenta', 'fuchsia', 'turquoise', 'khaki', 'tan', 'crimson', 'maroon'];
-var state = playScreen;
-var tempRainCondition = 0;
+var colors, cones, aiC, droplets;
+var player, gB;
+var speed, velocity, friction;
+var raining, grass;
+var col, counter, rain_s, d, leftFlash;
+var state;
+var tempRainCondition;
+
 //function preload(){
 //  skr = loadSound("Skrr.m4a")
 // }
@@ -26,23 +15,46 @@ function setup() {
   rectMode(CENTER);
   //skr.setVolume(1);
 
-  for (var ai = 0; ai < aiC.length; ai++) {
-    var random1 = Math.floor(Math.random() * colours.length);
-    var random2 = Math.random() > .5 ? 400 : 500;
-    aiC[ai] = new Car(100 + 300 * ai, random2, colours[random1]);
-  }
+  colors = ['red', 'orange', 'yellow', 'green', 'blue', 'violet', 'indigo',
+    'pink', 'purple', 'brown', 'navy', 'black', 'grey', 'white', 'gold', 'silver', 'bronze',
+    'cyan', 'teal', 'magenta', 'fuchsia', 'turquoise', 'khaki', 'tan', 'crimson', 'maroon'];
 
+  cones = new Array(10);
   for (var cone = 0; cone < cones.length; cone++) {
     cones[cone] = new StreetCone();
   }
 
+  aiC = new Array(4);
+  for (var ai = 0; ai < aiC.length; ai++) {
+    var random1 = Math.floor(Math.random() * colors.length);
+    var random2 = Math.random() > .5 ? 400 : 500;
+    aiC[ai] = new Car(100 + 300 * ai, random2, colors[random1]);
+  }
+
+  player = new Car(100, 200, "silver")
+  gB = new GearBox();
+
+  droplets = new Array(600);
   for (var raindrop = 0; raindrop < droplets.length; raindrop++) {
     droplets[raindrop] = new Rain();
   }
+
+  speed = 0;
+  velocity = 0.1;
+  friction = 9.5;
+
+  grass = false;
+  raining = false;
+
+  col = 0;
+  counter = 0;
+  rain_s = 20;
+
+  state = playScreen;
+  tempRainCondition = 0;
 }
 
 function draw() {
-  background(0);
   state();
 }
 
@@ -68,6 +80,10 @@ function playScreen() {
     cones[cone].render(-25 + (cone * 250), 300);
   }
 
+  player.render(25);
+  player.btn(speed);
+  player.edges();
+
   // render cars
   for (var ai = 0; ai < aiC.length; ai++) {
     aiC[ai].render(25);
@@ -76,17 +92,13 @@ function playScreen() {
 
     if (aiC[ai].x > width) {
       aiC[ai].x = 0;
-      
+
       tempRainCondition++;
-      if(tempRainCondition % 10 === 0) {
+      if (tempRainCondition % 10 === 0) {
         raining = !raining;
       }
     }
   }
-
-  player.render(25);
-  player.btn(speed);
-  player.edges();
 
   // collision detection between player and parked cars
   aiC.forEach(function (ai) {
@@ -97,59 +109,55 @@ function playScreen() {
 
   gB.render()
 
-  // accelerating
   if (keyIsDown(UP_ARROW)) {
-
-    if (gB.getGear() > 0) {
-      accelerating = true;
-      speed += velocity;
-    }
-
     if (gB.getGear() == -1) {
       speed -= velocity;
 
       if (speed < velocity * -10) {
         speed = velocity * -10;
       }
-    } else if (gB.getGear() == 1) {
-      if (speed > velocity * 10) {
-        speed = velocity * 10;
+    } else if (gB.getGear() != 0) {
+      speed += velocity;
+
+      if (gB.getGear() == 1) {
+        if (speed > velocity * 10) {
+          speed = velocity * 10;
+        }
+      } else if (gB.getGear() == 2) {
+        if (speed > velocity * 20) {
+          speed = velocity * 20;
+        }
+      } else if (gB.getGear() == 3) {
+        if (speed > velocity * 30) {
+          speed = velocity * 30;
+        }
+      } else if (gB.getGear() == 4) {
+        if (speed > velocity * 40) {
+          speed = velocity * 40;
+        }
+      } else if (gB.getGear() == 5) {
+        if (speed > velocity * 160) {
+          speed = velocity * 160;
+        }
       }
-    } else if (gB.getGear() == 2) {
-      if (speed > velocity * 20) {
-        speed = velocity * 20;
-      }
-    } else if (gB.getGear() == 3) {
-      if (speed > velocity * 30) {
-        speed = velocity * 30;
-      }
-    } else if (gB.getGear() == 4) {
-      if (speed > velocity * 40) {
-        speed = velocity * 40;
-      }
-    } else if (gB.getGear() == 5) {
-      if (speed > velocity * 180) {
-        speed = velocity * 180;
-      }
+    } else {
+      speed *= velocity * friction;
     }
   } else if (!keyIsDown(UP_ARROW)) {
-    accelerating = false;
     speed *= velocity * friction;
   }
-
-  if (d <= 50) speed *= velocity; //*speed
-  if (keyCode == 67) speed = 3; // cruise control
 
   if (keyIsDown(DOWN_ARROW)) {
     player.braking = true;
     speed *= velocity * friction - 0.05;
     //skr.play()
-  } else player.braking = false;
+  } else if (!keyIsDown(DOWN_ARROW))
+    player.braking = false;
 
-  push();
-  textSize(20);
+  if (keyCode == 67) speed = 3; // cruise control
+  if (d <= 50) speed *= velocity; //*speed
+
   text("[CTRL]\tView controls", 10, 685)
-  pop();
 
   if (raining) {
     friction = 9.9;
